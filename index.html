@@ -1,50 +1,85 @@
-def calcular_tapete_ovalado(largo_final, ancho_final, largo_inicial, ancho_inicial,
-                             ancho_tira_inicial=5, ancho_tira_max=12):
-    vueltas = []
-    largo_actual = largo_inicial
-    ancho_actual = ancho_inicial
-    ancho_tira = ancho_tira_inicial
-    vuelta = 1
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Tapete Ovalado</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; background: #f7f7f7; }
+    label, input { display: block; margin: 10px 0; }
+    button { padding: 10px 20px; margin-top: 10px; }
+    pre { background: #fff; padding: 15px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Calculadora de Tapete Ovalado</h1>
+  <label>Largo final del tapete (cm): <input type="number" id="largo_final"></label>
+  <label>Ancho final del tapete (cm): <input type="number" id="ancho_final"></label>
+  <label>Largo del óvalo inicial (cm): <input type="number" id="largo_inicial"></label>
+  <label>Ancho del óvalo inicial (cm): <input type="number" id="ancho_inicial"></label>
+  <button onclick="calcularTapete()">Calcular</button>
 
-    print(f"\n🔹 Largo final deseado: {largo_final} cm")
-    print(f"🔹 Ancho final deseado: {ancho_final} cm")
-    print(f"🔸 Largo del óvalo inicial: {largo_inicial} cm")
-    print(f"🔸 Ancho del óvalo inicial: {ancho_inicial} cm\n")
+  <h2>Resultado:</h2>
+  <pre id="resultado"></pre>
 
-    while largo_actual < largo_final and ancho_actual < ancho_final:
-        largo_tira = largo_actual + 2 * ancho_tira
-        ancho_tira_real = min(ancho_tira, ancho_tira_max)
+  <script>
+    function calcularTapete() {
+      const largoFinal = parseFloat(document.getElementById("largo_final").value);
+      const anchoFinal = parseFloat(document.getElementById("ancho_final").value);
+      const largoInicial = parseFloat(document.getElementById("largo_inicial").value);
+      const anchoInicial = parseFloat(document.getElementById("ancho_inicial").value);
 
-        largo_actual += 2 * ancho_tira_real * 1.2
-        ancho_actual += 2 * ancho_tira_real * 0.6
+      let largoActual = largoInicial;
+      let anchoActual = anchoInicial;
+      let anchoTira = 5;
+      const anchoTiraMax = 12;
+      let vueltas = [];
+      let vuelta = 1;
 
-        vueltas.append({
-            "vuelta": vuelta,
-            "largo_tira": round(largo_tira, 2),
-            "ancho_tira": round(ancho_tira_real, 2),
-            "largo_total": round(largo_actual, 2),
-            "ancho_total": round(ancho_actual, 2),
-        })
+      while (largoActual < largoFinal && anchoActual < anchoFinal) {
+        const anchoTiraReal = Math.min(anchoTira, anchoTiraMax);
+        const largoTira = largoActual + 2 * anchoTiraReal;
+        largoActual += 2 * anchoTiraReal * 1.2;
+        anchoActual += 2 * anchoTiraReal * 0.6;
 
-        if ancho_tira < ancho_tira_max:
-            ancho_tira += 1
+        vueltas.push({
+          vuelta,
+          largo_tira: largoTira.toFixed(1),
+          ancho_tira: anchoTiraReal.toFixed(1),
+          largo_total: largoActual.toFixed(1),
+          ancho_total: anchoActual.toFixed(1)
+        });
 
-        vuelta += 1
+        if (anchoTira < anchoTiraMax) anchoTira++;
+        vuelta++;
+      }
 
-    print(f"🔁 Total de vueltas necesarias: {len(vueltas)}\n")
-    print("📏 Medidas por vuelta (tira por tira):")
-    for v in vueltas:
-        print(f"Vuelta {v['vuelta']}: Largo tira = {v['largo_tira']} cm | Ancho tira = {v['ancho_tira']} cm "
-              f"→ Tapete: {v['largo_total']} x {v['ancho_total']} cm")
+      // Agregar dos vueltas extra
+      for (let i = 0; i < 2; i++) {
+        const anchoTiraReal = Math.min(anchoTira, anchoTiraMax);
+        const largoTira = largoActual + 2 * anchoTiraReal;
+        largoActual += 2 * anchoTiraReal * 1.2;
+        anchoActual += 2 * anchoTiraReal * 0.6;
 
+        vueltas.push({
+          vuelta,
+          largo_tira: largoTira.toFixed(1),
+          ancho_tira: anchoTiraReal.toFixed(1),
+          largo_total: largoActual.toFixed(1),
+          ancho_total: anchoActual.toFixed(1)
+        });
 
-# ---- ENTRADA POR TECLADO ----
-try:
-    largo_final = float(input("🔹 Ingresa el largo final del tapete (cm): "))
-    ancho_final = float(input("🔹 Ingresa el ancho final del tapete (cm): "))
-    largo_inicial = float(input("🔸 Ingresa el largo del óvalo inicial (cm): "))
-    ancho_inicial = float(input("🔸 Ingresa el ancho del óvalo inicial (cm): "))
-except ValueError:
-    print("❌ Por favor, ingresa solo números.")
-else:
-    calcular_tapete_ovalado(largo_final, ancho_final, largo_inicial, ancho_inicial)
+        if (anchoTira < anchoTiraMax) anchoTira++;
+        vuelta++;
+      }
+
+      let resultado = `🔁 Total de vueltas necesarias: ${vueltas.length}\n\n📏 Medidas por vuelta:`;
+      vueltas.forEach(v => {
+        resultado += `\nVuelta ${v.vuelta}: Largo tira = ${v.largo_tira} cm | Ancho tira = ${v.ancho_tira} cm → Tapete: ${v.largo_total} x ${v.ancho_total} cm`;
+      });
+      document.getElementById("resultado").textContent = resultado;
+    }
+  </script>
+</body>
+</html>
+
