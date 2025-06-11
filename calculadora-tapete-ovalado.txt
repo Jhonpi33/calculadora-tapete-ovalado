@@ -1,0 +1,50 @@
+def calcular_tapete_ovalado(largo_final, ancho_final, largo_inicial, ancho_inicial,
+                             ancho_tira_inicial=5, ancho_tira_max=12):
+    vueltas = []
+    largo_actual = largo_inicial
+    ancho_actual = ancho_inicial
+    ancho_tira = ancho_tira_inicial
+    vuelta = 1
+
+    print(f"\n🔹 Largo final deseado: {largo_final} cm")
+    print(f"🔹 Ancho final deseado: {ancho_final} cm")
+    print(f"🔸 Largo del óvalo inicial: {largo_inicial} cm")
+    print(f"🔸 Ancho del óvalo inicial: {ancho_inicial} cm\n")
+
+    while largo_actual < largo_final and ancho_actual < ancho_final:
+        largo_tira = largo_actual + 2 * ancho_tira
+        ancho_tira_real = min(ancho_tira, ancho_tira_max)
+
+        largo_actual += 2 * ancho_tira_real * 1.2
+        ancho_actual += 2 * ancho_tira_real * 0.6
+
+        vueltas.append({
+            "vuelta": vuelta,
+            "largo_tira": round(largo_tira, 2),
+            "ancho_tira": round(ancho_tira_real, 2),
+            "largo_total": round(largo_actual, 2),
+            "ancho_total": round(ancho_actual, 2),
+        })
+
+        if ancho_tira < ancho_tira_max:
+            ancho_tira += 1
+
+        vuelta += 1
+
+    print(f"🔁 Total de vueltas necesarias: {len(vueltas)}\n")
+    print("📏 Medidas por vuelta (tira por tira):")
+    for v in vueltas:
+        print(f"Vuelta {v['vuelta']}: Largo tira = {v['largo_tira']} cm | Ancho tira = {v['ancho_tira']} cm "
+              f"→ Tapete: {v['largo_total']} x {v['ancho_total']} cm")
+
+
+# ---- ENTRADA POR TECLADO ----
+try:
+    largo_final = float(input("🔹 Ingresa el largo final del tapete (cm): "))
+    ancho_final = float(input("🔹 Ingresa el ancho final del tapete (cm): "))
+    largo_inicial = float(input("🔸 Ingresa el largo del óvalo inicial (cm): "))
+    ancho_inicial = float(input("🔸 Ingresa el ancho del óvalo inicial (cm): "))
+except ValueError:
+    print("❌ Por favor, ingresa solo números.")
+else:
+    calcular_tapete_ovalado(largo_final, ancho_final, largo_inicial, ancho_inicial)
